@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1260</width>
+    <width>1284</width>
     <height>863</height>
    </rect>
   </property>
@@ -206,7 +206,7 @@
             <rect>
              <x>20</x>
              <y>320</y>
-             <width>521</width>
+             <width>551</width>
              <height>22</height>
             </rect>
            </property>
@@ -216,7 +216,7 @@
             </font>
            </property>
            <property name="text">
-            <string>{0:02} {1:03} {2:03} {3:03} {4:03} {5:03} {6:03} {7:03} {8:03} {9} {10}</string>
+            <string>{0:02} {1:03} {2:03} {3:03} {4:03} {5:03} {6:03} {7:03} {8:03} {9} {10} {11} {12}</string>
            </property>
           </widget>
           <widget class="QLabel" name="lbl_format">
@@ -224,7 +224,7 @@
             <rect>
              <x>0</x>
              <y>290</y>
-             <width>551</width>
+             <width>611</width>
              <height>20</height>
             </rect>
            </property>
@@ -236,7 +236,7 @@
             </font>
            </property>
            <property name="text">
-            <string> [0]class , [1]y_Max  [2]x_Max [3]y_Min [4]x_Min [5]H [6]W[7] x_Center [8]y_Center [9]Diff [10]Name</string>
+            <string> [0]class , [1]y_Max  [2]x_Max [3]y_Min [4]x_Min [5]H [6]W[7] x_Center [8]y_Center [9]Diff [10]Name [11-12] size</string>
            </property>
           </widget>
           <widget class="QPushButton" name="btn_create_dataloader_torch">
@@ -283,7 +283,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1260</width>
+     <width>1284</width>
      <height>26</height>
     </rect>
    </property>

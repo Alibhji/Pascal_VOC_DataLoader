@@ -139,15 +139,15 @@ class Appwin(QMainWindow):
         print("[Read image sizes]... it takes several Minutes...")
         data_pd['image_size'] = data_pd.apply(util.get_image_size, axis=1)
 
-        if (self.ui.chck_box_scale_to_1.isChecked()):
-            data_pd['yx_max'] = data_pd.apply(
-                lambda x: (x['yx_max'] / x['image_size'] ), axis=1)
-            data_pd['yx_min'] = data_pd.apply(
-                lambda x: (x['yx_min'] / x['image_size'] ), axis=1)
-            data_pd['center_point'] = data_pd.apply(
-                lambda x: (x['center_point'] / x['image_size'] ), axis=1)
-            data_pd['area'] = data_pd.apply(
-                lambda x: ((x[col_name[3]] - x[col_name[4]])[:, 1] * (x[col_name[3]] - x[col_name[4]])[:, 0]), axis=1)
+        # if (self.ui.chck_box_scale_to_1.isChecked()):
+        #     data_pd['yx_max'] = data_pd.apply(
+        #         lambda x: (x['yx_max'] / x['image_size'] ), axis=1)
+        #     data_pd['yx_min'] = data_pd.apply(
+        #         lambda x: (x['yx_min'] / x['image_size'] ), axis=1)
+        #     data_pd['center_point'] = data_pd.apply(
+        #         lambda x: (x['center_point'] / x['image_size'] ), axis=1)
+        #     data_pd['area'] = data_pd.apply(
+        #         lambda x: ((x[col_name[3]] - x[col_name[4]])[:, 1] * (x[col_name[3]] - x[col_name[4]])[:, 0]), axis=1)
 
 
         # print(data_pd.apply(lambda x: x[0]))
@@ -217,6 +217,11 @@ class Appwin(QMainWindow):
             #     print(data_pd1.iloc[i].tolist())
             for obj in range(len(b[0])):
                 obj = [row[obj] for row in b]
+                if (self.ui.chck_box_scale_to_1.isChecked()):
+                    obj[1] = '{:.5f}'.format(float(obj[1]) / float(obj[-2])) # ymax
+                    obj[2] = '{:.5f}'.format(float(obj[2]) / float(obj[-1])) # xmax
+                    obj[3] = '{:.5f}'.format(float(obj[3]) / float(obj[-2])) # ymin
+                    obj[4] = '{:.5f}'.format(float(obj[4]) / float(obj[-1])) # xmin
                 self.ui.textBrowser.append(str((''.join(str(obj)).strip('[]').replace(',', ''))))
 
         with open ('data_new_format.txt','w') as file:
@@ -333,12 +338,13 @@ class Appwin(QMainWindow):
         # sstr=sstr.replace('0','')
         print(newStr)
 
-        sstr = newStr.format( 'class' , 'yMax','xMax', 'yMin','xMin', 'H' ,'W','xCenter','yCenter','Diff','Name')
+        sstr = newStr.format( 'class' , 'yMax','xMax', 'yMin','xMin', 'H' ,'W','xCenter','yCenter','Diff','Name','size1','size2')
         self.ui.textBrowser.append(sstr)
 
         for i in range((self.data_pd.shape[0])):
             print((self.data_pd.shape[0]))
-            l=list(self.data_pd.iloc[i,[0,1,2,3,4,6,7]])
+            # print('data_pd.iloc--->',self.data_pd.iloc[i])
+            l=list(self.data_pd.iloc[i,[0,1,2,3,4,6,7,8]])
             cls=l[0]
             diff = l[1]
             path = l[2]
@@ -347,6 +353,7 @@ class Appwin(QMainWindow):
             yx_max = l[4]
             HW   = l[5]
             center = l[6]
+            size = l[7]
 
 
 
@@ -361,7 +368,7 @@ class Appwin(QMainWindow):
                                              int(yx_max[i,0]) ,int(yx_max[i,1]) ,
                                              int(HW[i,0]) , int(HW[i,1]),
                                              int(center[i,0]), int(center[i,1]),
-                                              diff[i], path           )
+                                              diff[i], path  ,size[0]   ,size[1]       )
                 self.ui.textBrowser.append(sstr)
 
         print('self.ui.textBrowser.document()')
