@@ -110,6 +110,7 @@ class Appwin(QMainWindow):
         root = self.config['dataset']['path']
         print(util.check_VOC(root))
         self.data, self.category_index = util.Read_VOC(self.config)
+        # print(self.data)
         self.config_update()
         self.ui.tableView.clicked.connect(self.table_clicked)
         self.threadpool = QThreadPool()
@@ -117,6 +118,7 @@ class Appwin(QMainWindow):
 
         self.ui.btn_filter.clicked.connect(self.btn_filter)
         self.ui.btn_gen_text.clicked.connect(self.btn_gen_text)
+        self.ui.btn_create_dataloader_torch.clicked.connect(self.btn_torch_data_loader)
 
 
     def config_update(self):
@@ -133,6 +135,21 @@ class Appwin(QMainWindow):
             lambda x: ((x[col_name[4]])+(x[col_name[3]]))/2.0, axis=1)
 
         data_pd['area'] = data_pd.apply(util.calculate_area, axis=1)
+
+        print("[Read image sizes]... it takes several Minutes...")
+        data_pd['image_size'] = data_pd.apply(util.get_image_size, axis=1)
+
+        if (self.ui.chck_box_scale_to_1.isChecked()):
+            data_pd['yx_max'] = data_pd.apply(
+                lambda x: (x['yx_max'] / x['image_size'] ), axis=1)
+            data_pd['yx_min'] = data_pd.apply(
+                lambda x: (x['yx_min'] / x['image_size'] ), axis=1)
+            data_pd['center_point'] = data_pd.apply(
+                lambda x: (x['center_point'] / x['image_size'] ), axis=1)
+            data_pd['area'] = data_pd.apply(
+                lambda x: ((x[col_name[3]] - x[col_name[4]])[:, 1] * (x[col_name[3]] - x[col_name[4]])[:, 0]), axis=1)
+
+
         # print(data_pd.apply(lambda x: x[0]))
         self.data_pd = data_pd
         self.model = util.pandasModel_2(data_pd)
@@ -180,6 +197,31 @@ class Appwin(QMainWindow):
         # self.ui.tableView.setModel(self.model)
         # print(self.data_pd[k])
 
+    def btn_torch_data_loader(self):
+        # with open('.\data.txt','r') as f:
+        #     data=f.read()
+        self.ui.textBrowser.clear()
+        # self.ui.textBrowser.setText(str((data[1:,:])))
+
+        data_pd= pd.read_csv('.\data.txt', sep=" ")
+        data_pd=data_pd.groupby('Name').agg(list)
+        # self.ui.textBrowser.append(str(data_pd))
+
+        # for i in range((data_pd.shape[0])):
+        #     self.ui.textBrowser.append(str(data_pd.index.values[i]))
+        #     self.ui.textBrowser.append(str(data_pd.iloc[i].tolist()))
+
+        for i in range((data_pd.shape[0])):
+            b = list(data_pd.iloc[i])
+            self.ui.textBrowser.append(str(('[{}]'.format(data_pd.index.values[i]))))
+            #     print(data_pd1.iloc[i].tolist())
+            for obj in range(len(b[0])):
+                obj = [row[obj] for row in b]
+                self.ui.textBrowser.append(str((''.join(str(obj)).strip('[]').replace(',', ''))))
+
+        with open ('data_new_format.txt','w') as file:
+            file.write(str(self.ui.textBrowser.toPlainText()))
+
     def table_clicked(self,index):
         index=QModelIndex(index)
 
@@ -189,17 +231,17 @@ class Appwin(QMainWindow):
         image= list(self.model.itemData(QModelIndex(ind)).values())[0]
 
         ind = self.model.index(row, 3)
-        xyMax= list(self.model.itemData(QModelIndex(ind)).values())[0]
-        xyMax=xyMax.replace('[', '').replace(']', '').split()
-        xyMax = [int(float(i)) for i in xyMax]
-        xyMax=[tuple(xyMax[i + 0:2 + i]) for i in range(0, len(xyMax), 2)]
+        yxMax= list(self.model.itemData(QModelIndex(ind)).values())[0]
+        yxMax=yxMax.replace('[', '').replace(']', '').split()
+        yxMax = [int(float(i)) for i in yxMax]
+        yxMax=[tuple(yxMax[i + 0:2 + i]) for i in range(0, len(yxMax), 2)]
 
 
         ind = self.model.index(row, 4)
-        xyMin = list(self.model.itemData(QModelIndex(ind)).values())[0]
-        xyMin = xyMin.replace('[', '').replace(']', '').split()
-        xyMin = [int(float(i)) for i in xyMin ]
-        xyMin = [tuple(xyMin[i + 0:2 + i]) for i in range(0, len(xyMin), 2)]
+        yxMin = list(self.model.itemData(QModelIndex(ind)).values())[0]
+        yxMin = yxMin.replace('[', '').replace(']', '').split()
+        yxMin = [int(float(i)) for i in yxMin ]
+        yxMin = [tuple(yxMin[i + 0:2 + i]) for i in range(0, len(yxMin), 2)]
 
         ind = self.model.index(row, 7)
         center = list(self.model.itemData(QModelIndex(ind)).values())[0]
@@ -213,7 +255,7 @@ class Appwin(QMainWindow):
         label = list(self.model.itemData(QModelIndex(ind)).values())[0]
         label = label.replace('[', '').replace(']', '').split()
 
-        # xyMin=ast.literal_eval(xyMin.replace(' ', ','))
+        # yxMin=ast.literal_eval(yxMin.replace(' ', ','))
 
         classes= self.config['dataset']['category'].split(',')
 
@@ -222,9 +264,12 @@ class Appwin(QMainWindow):
 
         objs=[]
 
-        for i in range(len(xyMax)):
-            y1, x1 = xyMin[i]
-            y2, x2 = xyMax[i]
+        for i in range(len(yxMax)):
+
+
+
+            y1, x1 = yxMin[i]
+            y2, x2 = yxMax[i]
         #
         #
             # print(i,'value: ',x1, y1 ,x2, y2 )
@@ -239,7 +284,7 @@ class Appwin(QMainWindow):
             image = cv2.rectangle(image, start_point, end_point, color, thickness)
             image=cv2.circle(image, (center[i][1],center[i][0]), 2, (0, 0, 255), -1)
 
-        # util.Qlogging(self.ui.textBrowser, '{} has {} objects: \\n {}'.format(name,len(xyMax),objs),'red' )
+        # util.Qlogging(self.ui.textBrowser, '{} has {} objects: \\n {}'.format(name,len(yxMax),objs),'red' )
 
         cv2.imshow(name, image)
         cv2.waitKey(4000)
@@ -265,6 +310,32 @@ class Appwin(QMainWindow):
 
     def btn_gen_text(self):
         self.ui.textBrowser.clear()
+        sstr = self.ui.in_text_format.text()
+        sstr=" ".join(sstr.split())
+        s = False
+        e = False
+
+        newStr = ''
+
+        for i in range(len(sstr)):
+            if (sstr[i] == ':'):
+                s = True
+
+            if (sstr[i] == '}'):
+                s = False
+
+            if (s):
+                pass
+            #         del st[i]
+            #         print(st[i])
+            else:
+                newStr = newStr + sstr[i]
+        # sstr=sstr.replace('0','')
+        print(newStr)
+
+        sstr = newStr.format( 'class' , 'yMax','xMax', 'yMin','xMin', 'H' ,'W','xCenter','yCenter','Diff','Name')
+        self.ui.textBrowser.append(sstr)
+
         for i in range((self.data_pd.shape[0])):
             print((self.data_pd.shape[0]))
             l=list(self.data_pd.iloc[i,[0,1,2,3,4,6,7]])
@@ -278,8 +349,12 @@ class Appwin(QMainWindow):
             center = l[6]
 
 
+
+
+
             for i in range(len(cls)):
                 sstr=self.ui.in_text_format.text()
+                sstr = " ".join(sstr.split())
                 # sstr='{:02} {:03} {:03} {:03} {:03} {:03} {:03} {:03} {:03} {} {}'.format(cls[i] ,
                 sstr = sstr.format(cls[i],
                                              int(yx_min[i,0]) ,int(yx_min[i,1])  ,
@@ -288,6 +363,12 @@ class Appwin(QMainWindow):
                                              int(center[i,0]), int(center[i,1]),
                                               diff[i], path           )
                 self.ui.textBrowser.append(sstr)
+
+        print('self.ui.textBrowser.document()')
+
+        with open ('data.txt','w') as file:
+            file.write(str(self.ui.textBrowser.toPlainText()))
+
 
 
 

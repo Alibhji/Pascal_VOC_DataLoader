@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1174, 765)
+        MainWindow.resize(1260, 863)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
@@ -92,6 +92,12 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.lbl_format.setFont(font)
         self.lbl_format.setObjectName("lbl_format")
+        self.btn_create_dataloader_torch = QtWidgets.QPushButton(self.gbox_options_tab1)
+        self.btn_create_dataloader_torch.setGeometry(QtCore.QRect(20, 650, 221, 28))
+        self.btn_create_dataloader_torch.setObjectName("btn_create_dataloader_torch")
+        self.chck_box_scale_to_1 = QtWidgets.QCheckBox(self.gbox_options_tab1)
+        self.chck_box_scale_to_1.setGeometry(QtCore.QRect(430, 240, 81, 20))
+        self.chck_box_scale_to_1.setObjectName("chck_box_scale_to_1")
         self.gridLayout.addWidget(self.gbox_options_tab1, 0, 1, 1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
@@ -100,7 +106,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.tabWidget, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1174, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1260, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -108,6 +114,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -122,6 +129,8 @@ class Ui_MainWindow(object):
         self.btn_gen_text.setText(_translate("MainWindow", "Genrate text file"))
         self.lbl_num_objects.setText(_translate("MainWindow", "Number of Objects:"))
         self.in_text_format.setText(_translate("MainWindow", "{0:02} {1:03} {2:03} {3:03} {4:03} {5:03} {6:03} {7:03} {8:03} {9} {10}"))
-        self.lbl_format.setText(_translate("MainWindow", " [0]class , [1]y_Min  [2]x_Min [3]y_Max [4]x_Max [5]H [6]W[7] x_Center [8]y_Center [9]Diff [10]Name"))
+        self.lbl_format.setText(_translate("MainWindow", " [0]class , [1]y_Max  [2]x_Max [3]y_Min [4]x_Min [5]H [6]W[7] x_Center [8]y_Center [9]Diff [10]Name"))
+        self.btn_create_dataloader_torch.setText(_translate("MainWindow", "Sava it as Pytorch data Loader"))
+        self.chck_box_scale_to_1.setText(_translate("MainWindow", "Scale to 1"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Tab 1"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))

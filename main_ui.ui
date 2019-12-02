@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1174</width>
-    <height>765</height>
+    <width>1260</width>
+    <height>863</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,9 @@
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
         <string>Tab 1</string>
@@ -233,7 +236,33 @@
             </font>
            </property>
            <property name="text">
-            <string> [0]class , [1]y_Min  [2]x_Min [3]y_Max [4]x_Max [5]H [6]W[7] x_Center [8]y_Center [9]Diff [10]Name</string>
+            <string> [0]class , [1]y_Max  [2]x_Max [3]y_Min [4]x_Min [5]H [6]W[7] x_Center [8]y_Center [9]Diff [10]Name</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="btn_create_dataloader_torch">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>650</y>
+             <width>221</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Sava it as Pytorch data Loader</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="chck_box_scale_to_1">
+           <property name="geometry">
+            <rect>
+             <x>430</x>
+             <y>240</y>
+             <width>81</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Scale to 1</string>
            </property>
           </widget>
          </widget>
@@ -254,7 +283,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1174</width>
+     <width>1260</width>
      <height>26</height>
     </rect>
    </property>

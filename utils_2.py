@@ -8,6 +8,7 @@ import tqdm
 import xml.etree.ElementTree
 import numpy as np
 import pandas as pd
+import cv2
 
 
 
@@ -60,10 +61,10 @@ def load_annotation(path, category_index):
         except KeyError:
             continue
         bbox = obj.find('bndbox')
-        ymin = float(bbox.find('ymin').text) - 1
-        xmin = float(bbox.find('xmin').text) - 1
-        ymax = float(bbox.find('ymax').text) - 1
-        xmax = float(bbox.find('xmax').text) - 1
+        ymin = int(bbox.find('ymin').text)
+        xmin = int(bbox.find('xmin').text)
+        ymax = int(bbox.find('ymax').text)
+        xmax = int(bbox.find('xmax').text)
         assert ymin < ymax
         assert xmin < xmax
         yx_min.append((ymin, xmin))
@@ -175,6 +176,11 @@ def calculate_area(row):
     cc=row['yx_max'] - row['yx_min']
 
     return cc
+
+def get_image_size(row):
+    size=cv2.imread(row['path']).shape[0:2]
+
+    return list(size)
 
 
 
