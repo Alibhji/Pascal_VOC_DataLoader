@@ -203,7 +203,7 @@ class Appwin(QMainWindow):
         self.ui.textBrowser.clear()
         # self.ui.textBrowser.setText(str((data[1:,:])))
 
-        data_pd= pd.read_csv('.\data.txt', sep=" ")
+        data_pd= pd.read_csv('data.txt', sep=" ")
         data_pd=data_pd.groupby('Name').agg(list)
         # self.ui.textBrowser.append(str(data_pd))
 
@@ -348,7 +348,8 @@ class Appwin(QMainWindow):
             cls=l[0]
             diff = l[1]
             path = l[2]
-            path=path.split('\\')[-1]
+            # path=path.split('\\')[-1]   # this is for windows
+            path = path.split('/')[-1]    # this is for linux
             yx_min = l[3]
             yx_max = l[4]
             HW   = l[5]
